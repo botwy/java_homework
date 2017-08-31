@@ -22,7 +22,7 @@ public class MyLinkedList<E> {
     }
 
     public void add(int index, E element) {
-        if (count == 0) throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
+        if (count == 0 || index>count) throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
         Node<E> node = new Node<E>(element);
         if (index == 0) {
             node.setNext(head);
@@ -32,15 +32,8 @@ public class MyLinkedList<E> {
             tail.setNext(node);
             node.setPrev(tail);
             tail = node;
-        } else if (index > count) {
-            throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
         } else {
-          //  if (index<count-index)
-            Node<E> cursor = null;
-            for (int i = 0; i <= index; i++)
-                if (i == 0) cursor = head;
-            else
-                cursor = cursor.getNext();
+            Node<E> cursor = findNodeByIndex(index);
 
             node.setNext(cursor);
             node.setPrev(cursor.getPrev());
@@ -52,24 +45,16 @@ public class MyLinkedList<E> {
     }
 
     public E get(int index) {
-        if (count == 0) throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
-        Node<E> cursor = null;
-        for (int i = 0; i <= index; i++) {
-            if (i == 0) cursor = head;
-            else {
-                if (cursor.getNext() == null)
-                    throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
-                else
-                    cursor = cursor.getNext();
-            }
-        }
+        if (count == 0 || index>=count) throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
+        Node<E> cursor = findNodeByIndex(index);
+
         return cursor.getElement();
     }
 
     public E remove(int index) {
-        if (count == 0) throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
+        if (count == 0 || index>=count) throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
+
         Node<E> cursor = null;
-        Node<E> prev_cursor = null;
         if (index == 0) {
             cursor=head;
             head = cursor.getNext();
@@ -80,17 +65,7 @@ public class MyLinkedList<E> {
             tail.setNext(null);
         }
         else {
-            for (int i = 0; i <= index; i++) {
-                if (i == 0) cursor = head;
-                else {
-                    if (cursor.getNext() == null)
-                        throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
-                    else
-                        cursor = cursor.getNext();
-                }
-
-            }
-
+            cursor=findNodeByIndex(index);
             cursor.getPrev().setNext(cursor.getNext());
             cursor.getNext().setPrev(cursor.getPrev());
         }
@@ -160,5 +135,21 @@ public class MyLinkedList<E> {
             }
             return cursor.getElement();
         }
+    }
+
+    private Node<E> findNodeByIndex(int index) {
+        Node<E> cursor = null;
+        if (index<count-index) {
+            for (int i = 0; i <= index; i++)
+                if (i == 0) cursor = head;
+                else
+                    cursor = cursor.getNext();
+        }else{
+            for (int i = 0; i < count-index; i++)
+                if (i == 0) cursor = tail;
+                else
+                    cursor = cursor.getPrev();
+        }
+        return cursor;
     }
 }
