@@ -1,125 +1,163 @@
 package com.homework3.my_linked_list;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class MyLinkedList<E> {
 
     private Node<E> head;
     private Node<E> tail;
-    private int count;
+    private int count = 0;
 
-    public void add (E element){
+    public void add(E element) {
         Node<E> node = new Node<E>(element);
-        if (head == null) {
-            head=node;
-        }else{
+        if (count == 0) {
+            head = node;
+        } else {
+            node.setPrev(tail);
             tail.setNext(node);
         }
 
         tail = node;
         count++;
     }
-    public void add (int index, E element){
+
+    public void add(int index, E element) {
+        if (count == 0) throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
         Node<E> node = new Node<E>(element);
-        if (index>=count) {
-            tail.setNext(node);
-            tail=node;
-        }else if (index==0){
+        if (index == 0) {
             node.setNext(head);
-            head=node;
-        }
-        else{
-            Node<E> prev_node=head;
-            for (int i = 1; i < index; i++)
-                prev_node=prev_node.getNext();
+            head.setPrev(node);
+            head = node;
+        } else if (index == count) {
+            tail.setNext(node);
+            node.setPrev(tail);
+            tail = node;
+        } else if (index > count) {
+            throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
+        } else {
+          //  if (index<count-index)
+            Node<E> cursor = null;
+            for (int i = 0; i <= index; i++)
+                if (i == 0) cursor = head;
+            else
+                cursor = cursor.getNext();
 
-            node.setNext(prev_node.getNext());
-            prev_node.setNext(node);
-
+            node.setNext(cursor);
+            node.setPrev(cursor.getPrev());
+            node.getPrev().setNext(node);
+            node.getNext().setPrev(node);
         }
         count++;
 
     }
-    public  E get (int index) {
-        Node<E> cursor = head;
-        for (int i = 1; i <= index; i++) {
-            if (cursor.getNext()==null)
-                throw new IndexOutOfBoundsException("Do not get, index "+index+" out of bounds");
-            else
-                cursor=cursor.getNext();
+
+    public E get(int index) {
+        if (count == 0) throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
+        Node<E> cursor = null;
+        for (int i = 0; i <= index; i++) {
+            if (i == 0) cursor = head;
+            else {
+                if (cursor.getNext() == null)
+                    throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
+                else
+                    cursor = cursor.getNext();
+            }
         }
         return cursor.getElement();
     }
 
-public  E remove (int index) {
-        Node<E> cursor=head;
-        Node<E> prev_cursor =null;
-        if(index==0){
-            head=cursor.getNext();
-        }else{
-            for (int i = 1; i <= index ; i++){
-                if (cursor.getNext()==null)
-                    throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
-                else {
-                    prev_cursor=cursor;
-                    cursor = cursor.getNext();
-                }
-                }
-
-                if (cursor.getNext()==null)
-                    tail=prev_cursor;
-
-               prev_cursor.setNext(cursor.getNext());
+    public E remove(int index) {
+        if (count == 0) throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
+        Node<E> cursor = null;
+        Node<E> prev_cursor = null;
+        if (index == 0) {
+            cursor=head;
+            head = cursor.getNext();
         }
-    cursor.setNext(null);
-    count--;
-    return cursor.getElement();
-}
+        else if (index == count-1) {
+            cursor=tail;
+            tail = cursor.getPrev();
+            tail.setNext(null);
+        }
+        else {
+            for (int i = 0; i <= index; i++) {
+                if (i == 0) cursor = head;
+                else {
+                    if (cursor.getNext() == null)
+                        throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
+                    else
+                        cursor = cursor.getNext();
+                }
 
-public Iterator<E> iterator() {
+            }
+
+            cursor.getPrev().setNext(cursor.getNext());
+            cursor.getNext().setPrev(cursor.getPrev());
+        }
+        cursor.setNext(null);
+        cursor.setPrev(null);
+        count--;
+        return cursor.getElement();
+    }
+
+    public Iterator<E> iterator() {
         return new Itr<E>(head);
-}
-
-public boolean addAll(Collection<? extends E> c) {
-   boolean isChange=false;
-    for (E element:c) {
-        add(element);
-        isChange=true;
-    }
-    return isChange;
     }
 
-//public boolean copy(Collection<? super E> c) {}
+    public boolean addAll(Collection<? extends E> c) {
+        boolean isChange = false;
+        for (E element : c) {
+            add(element);
+            isChange = true;
+        }
+        return isChange;
+    }
+
+    public boolean copy(Collection<? extends E> c) {
+        if (c.size() > count)
+            throw new IndexOutOfBoundsException("Do not copy from this Collection, size of MyLinkedList < size of this Collection");
+        if (count == 0) return false;
+
+        Node<E> cursor = null;
+        Iterator<? extends E> iterator = c.iterator();
+        for (int i = 0; i < count; i++) {
+            if (i == 0) cursor = head;
+            else cursor = cursor.getNext();
+
+            if (iterator.hasNext()) cursor.setElement(iterator.next());
+        }
+
+        return true;
+    }
 
 
     private class Itr<E> implements Iterator<E> {
-   private Node<E> cursor;
-   private Node<E> h;
+        private Node<E> cursor;
+        private Node<E> h;
 
-   Itr(Node<E> head) {
-       this.h = head;
-       this.cursor=null;
-   }
+        Itr(Node<E> head) {
+            this.h = head;
+            this.cursor = null;
+        }
+
         @Override
         public boolean hasNext() {
-       if (cursor==null)
-           return h!=null;
-       else
-            return cursor.getNext()!=null;
+            if (cursor == null)
+                return h != null;
+            else
+                return cursor.getNext() != null;
         }
 
         @Override
         public E next() {
-       if (cursor==null)
-           cursor=h;
-       else {
-           if(!hasNext())
-               throw new NoSuchElementException();
+            if (cursor == null)
+                cursor = h;
+            else {
+                if (!hasNext())
+                    throw new NoSuchElementException();
 
-           cursor = cursor.getNext();
-       }
+                cursor = cursor.getNext();
+            }
             return cursor.getElement();
         }
     }
