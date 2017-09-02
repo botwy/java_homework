@@ -9,9 +9,14 @@ import java.util.zip.DataFormatException;
 public class TerminalImpl implements ITerminal {
     private final TerminalServer server = new TerminalServer();
     private final PinValidator pinValidator = new PinValidator();
+
+    private final UI ui = new UI();
+
     private int countWrongTry = 0;
     private boolean isLocked = false;
     private long lockTimeMilis = 0;
+
+
 
     @Override
     public float getBalance(String pin) {
@@ -27,8 +32,12 @@ public class TerminalImpl implements ITerminal {
         if(modulo>0)
             throw new DataFormatException("Sum must min 100");
 
-        if (checkPin(pin))
-        return server.withdrow(sum);
+        if (checkPin(pin)) {
+            if (server.withdrow(sum)) {
+                ui.showWithdrowDone(sum);
+                return true;
+            } else return false;
+        }
         else return false;
     }
 
@@ -45,11 +54,7 @@ public class TerminalImpl implements ITerminal {
                 throw new LoginException("there is no PIN");
             } catch (LoginException e) {
                 e.printStackTrace();
-            } finally {
-                System.out.println("pin is null, type true pin");
-                Scanner sc = new Scanner(System.in);
-                String in_text = sc.next();
-
+                String in_text = ui.requestPinAfterWrong("Пин неверный, введите верный пин");
                 return checkPin(in_text);
             }
         } else if (pinValidator.checkPin(pin)) {
@@ -61,11 +66,7 @@ public class TerminalImpl implements ITerminal {
                     throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec");
                 } catch (AccountLockedException e) {
                     e.printStackTrace();
-                }finally {
-                    System.out.println("wait "+time_to_unlock+" sec and type true pin");
-                    Scanner sc = new Scanner(System.in);
-                    String in_text = sc.next();
-
+                    String in_text = ui.requestPinAfterWrong("Подождите "+time_to_unlock+" сек и введите пин");
                     return checkPin(in_text);
                 }
             }else {
@@ -83,6 +84,8 @@ public class TerminalImpl implements ITerminal {
                     throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec");
                 } catch (AccountLockedException e) {
                     e.printStackTrace();
+                    String in_text = ui.requestPinAfterWrong("Ввод пина заблокирован, можно будет продолжить через "+time_to_unlock+" сек");
+                    return checkPin(in_text);
                 }
             }
             if (countWrongTry == 3) {
@@ -90,10 +93,7 @@ public class TerminalImpl implements ITerminal {
                 lockTimeMilis = System.currentTimeMillis();
                 countWrongTry = 0;
             }
-            System.out.println("pin is wrong, type true pin");
-            Scanner sc = new Scanner(System.in);
-            String in_text = sc.next();
-
+            String in_text = ui.requestPinAfterWrong("Пин неверный, введите верный пин");
             return checkPin(in_text);
 
         }
