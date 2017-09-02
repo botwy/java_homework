@@ -1,19 +1,32 @@
 package com.homework5.terminal;
 
+import javax.management.BadStringOperationException;
+import java.util.concurrent.ExecutionException;
+
 public class TerminalServer{
 
+private float balance = 9500f;
 
     public float getBalance() {
-        float bal = 9500f;
-        return bal;
+        return balance;
     }
 
-    public boolean withdrow(float sum) {
-        return false;
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
+
+    public boolean withdrow(float sum) throws BadStringOperationException {
+        if(balance>=sum) {
+            balance -= sum;
+            return true;
+        }else{
+            throw new BadStringOperationException("Not enough fund");
+        }
     }
 
     public boolean add(float sum) {
-        return false;
+        balance+=sum;
+        return true;
     }
 
 

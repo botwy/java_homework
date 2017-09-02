@@ -1,8 +1,10 @@
 package com.homework5.terminal;
 
+import javax.management.BadStringOperationException;
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.LoginException;
 import java.util.Scanner;
+import java.util.zip.DataFormatException;
 
 public class TerminalImpl implements ITerminal {
     private final TerminalServer server = new TerminalServer();
@@ -20,13 +22,21 @@ public class TerminalImpl implements ITerminal {
     }
 
     @Override
-    public boolean withdrow(String pin, float sum) {
-        return false;
+    public boolean withdrow(String pin, float sum) throws DataFormatException, BadStringOperationException {
+        float modulo = sum%100f;
+        if(modulo>0)
+            throw new DataFormatException("Sum must min 100");
+
+        if (checkPin(pin))
+        return server.withdrow(sum);
+        else return false;
     }
 
     @Override
     public boolean add(String pin, float sum) {
-        return false;
+        if (checkPin(pin))
+        return server.add(sum);
+        else return false;
     }
 
     private boolean checkPin(String pin) {
@@ -42,7 +52,27 @@ public class TerminalImpl implements ITerminal {
 
                 return checkPin(in_text);
             }
-        } else if (pinValidator.checkPin(pin) && !isLocked) return true;
+        } else if (pinValidator.checkPin(pin)) {
+            if (System.currentTimeMillis() - lockTimeMilis > 5000)
+                isLocked = false;
+            if (isLocked) {
+                long time_to_unlock = (5000 + lockTimeMilis - System.currentTimeMillis()) / 1000;
+                try {
+                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec");
+                } catch (AccountLockedException e) {
+                    e.printStackTrace();
+                }finally {
+                    System.out.println("wait "+time_to_unlock+" sec and type true pin");
+                    Scanner sc = new Scanner(System.in);
+                    String in_text = sc.next();
+
+                    return checkPin(in_text);
+                }
+            }else {
+                countWrongTry = 0;
+                return true;
+            }
+        }
         else {
             if (!isLocked) countWrongTry++;
             else if (System.currentTimeMillis() - lockTimeMilis > 5000)
@@ -50,7 +80,7 @@ public class TerminalImpl implements ITerminal {
             else {
                 long time_to_unlock = (5000 + lockTimeMilis - System.currentTimeMillis()) / 1000;
                 try {
-                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock);
+                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec");
                 } catch (AccountLockedException e) {
                     e.printStackTrace();
                 }
