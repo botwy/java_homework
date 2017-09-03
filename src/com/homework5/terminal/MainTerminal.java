@@ -11,24 +11,23 @@ public class MainTerminal {
 
     public static void main(String[] args) {
         TerminalImpl term = new TerminalImpl();
+        Scanner sc = new Scanner(System.in);
+        float sum = 0f;
+        term.getBalance(UI.firstRequestPin("Чтобы узнать баланс введите пин"));
 
 
-            float bal = term.getBalance(UI.firstRequestPin("Чтобы узнать баланс введите пин"));
-            System.out.println(bal);
+        System.out.println("Введите сумму которую хотите отправить:");
 
-        try {
-            System.out.println("Введите сумму которую хотите отправить:");
-            Scanner sc = new Scanner(System.in);
-            float sum = sc.nextFloat();
-            term.withdrow(UI.firstRequestPin("Чтобы отправить "+sum+"руб ведите пин"),sum);
-        } catch (DataFormatException e) {
-            e.printStackTrace();
-        } catch (BadStringOperationException e) {
-            e.printStackTrace();
-        }
-        bal = term.getBalance(UI.firstRequestPin("Чтобы узнать баланс ведите пин"));
-        System.out.println(bal);
+        sum = sc.nextFloat();
+        term.withdrow(UI.firstRequestPin("Чтобы отправить "+sum+" руб ведите пин"),sum);
 
+        term.getBalance(UI.firstRequestPin("Чтобы узнать баланс ведите пин"));
+
+        System.out.println("Введите сумму которую хотите положить на свой счет");
+        sum = sc.nextFloat();
+        term.add(UI.firstRequestPin("Чтобы положить на счет "+sum+" руб ведите пин"),sum);
+
+        term.getBalance(UI.firstRequestPin("Чтобы узнать баланс ведите пин"));
     }
 
 }
