@@ -19,13 +19,13 @@ public class MainTerminal {
         System.out.println("Введите сумму которую хотите отправить:");
 
         sum = sc.nextFloat();
-        term.withdrow(UI.firstRequestPin("Чтобы отправить "+sum+" руб ведите пин"),sum);
+        term.withdrow(UI.firstRequestPin("Чтобы отправить " + sum + " руб ведите пин"), sum);
 
         term.getBalance(UI.firstRequestPin("Чтобы узнать баланс ведите пин"));
 
         System.out.println("Введите сумму которую хотите положить на свой счет");
         sum = sc.nextFloat();
-        term.add(UI.firstRequestPin("Чтобы положить на счет "+sum+" руб ведите пин"),sum);
+        term.add(UI.firstRequestPin("Чтобы положить на счет " + sum + " руб ведите пин"), sum);
 
         term.getBalance(UI.firstRequestPin("Чтобы узнать баланс ведите пин"));
     }

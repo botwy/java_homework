@@ -4,7 +4,6 @@ import javax.management.BadStringOperationException;
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.LoginException;
 import java.net.SocketException;
-import java.util.Scanner;
 import java.util.zip.DataFormatException;
 
 public class TerminalImpl implements ITerminal {
@@ -16,7 +15,6 @@ public class TerminalImpl implements ITerminal {
     private int countWrongTry = 0;
     private boolean isLocked = false;
     private long lockTimeMilis = 0;
-
 
 
     @Override
@@ -31,12 +29,12 @@ public class TerminalImpl implements ITerminal {
                 ui.showSocketException();
                 return -1f;
             }
-        }else return -1f;
+        } else return -1f;
     }
 
     @Override
     public boolean withdrow(String pin, float sum) {
-        if(sum%100f>0) {
+        if (sum % 100f > 0) {
             try {
                 throw new DataFormatException("Sum not multiple 100 rub. Enter sum multiple 100 rub");
             } catch (DataFormatException e) {
@@ -47,8 +45,8 @@ public class TerminalImpl implements ITerminal {
         }
         if (checkPin(pin)) {
             try {
-                    server.withdrow(sum);
-                    ui.showWithdrowDone(sum);
+                server.withdrow(sum);
+                ui.showWithdrowDone(sum);
             } catch (SocketException e) {
                 e.printStackTrace();
                 ui.showSocketException();
@@ -57,12 +55,21 @@ public class TerminalImpl implements ITerminal {
                 ui.showWrongSumException();
             }
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     @Override
     public boolean add(String pin, float sum) {
+        if (sum % 100f > 0) {
+            try {
+                throw new DataFormatException("Sum not multiple 100 rub. Enter sum multiple 100 rub");
+            } catch (DataFormatException e) {
+                e.printStackTrace();
+                ui.showWrongMultipleSum();
+            }
+            return false;
+        }
+
         if (checkPin(pin)) {
             try {
                 server.add(sum);
@@ -72,8 +79,7 @@ public class TerminalImpl implements ITerminal {
                 ui.showSocketException();
             }
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     private boolean checkPin(String pin) {
@@ -91,28 +97,27 @@ public class TerminalImpl implements ITerminal {
             if (isLocked) {
                 long time_to_unlock = (5000 + lockTimeMilis - System.currentTimeMillis()) / 1000;
                 try {
-                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec. Over this time enter pin");
+                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock + " sec. Over this time enter pin");
                 } catch (AccountLockedException e) {
                     e.printStackTrace();
-                    String in_text = ui.requestPinAfterWrong("Подождите "+time_to_unlock+" сек и введите пин");
+                    String in_text = ui.requestPinAfterWrong("Подождите " + time_to_unlock + " сек и введите пин");
                     return checkPin(in_text);
                 }
-            }else {
+            } else {
                 countWrongTry = 0;
                 return true;
             }
-        }
-        else {
+        } else {
             if (!isLocked) countWrongTry++;
             else if (System.currentTimeMillis() - lockTimeMilis > 5000)
                 isLocked = false;
             else {
                 long time_to_unlock = (5000 + lockTimeMilis - System.currentTimeMillis()) / 1000;
                 try {
-                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock+" sec. Over this time enter right pin.");
+                    throw new AccountLockedException("pin is locked, time to unlocked " + time_to_unlock + " sec. Over this time enter right pin.");
                 } catch (AccountLockedException e) {
                     e.printStackTrace();
-                    String in_text = ui.requestPinAfterWrong("Ввод пина заблокирован, можно будет продолжить через "+time_to_unlock+" сек");
+                    String in_text = ui.requestPinAfterWrong("Ввод пина заблокирован, можно будет продолжить через " + time_to_unlock + " сек");
                     return checkPin(in_text);
                 }
             }
