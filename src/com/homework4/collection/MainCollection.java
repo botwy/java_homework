@@ -1,4 +1,4 @@
-package com.com.homework4.collection;
+package com.homework4.collection;
 
 import java.util.*;
 
