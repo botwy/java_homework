@@ -26,7 +26,7 @@ public class CashHandler implements InvocationHandler {
         String line;
         while ((line = br.readLine()) != null) {
             String[] arr = line.split("\\t");
-            if (arr.length == 0 || arr.length == 1) continue;
+            if (arr.length != 4) continue;
             if (Float.toString(operand1).equals(arr[1]) && Float.toString(operand2).equals(arr[2]) && operator.equals(arr[0])) {
                 result = Float.parseFloat(arr[3]);
                 return result;
