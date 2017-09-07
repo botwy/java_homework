@@ -22,6 +22,7 @@ public class BeanUtils {
           * @param to   Object which properties will be set.
           * @param from Object which properties will be used to get values.
           */
+
     public static void assign(Object to, Object from) {
         Method[] arr_meth_from = from.getClass().getMethods();
         List<Method> list_geterFrom = new ArrayList<>();

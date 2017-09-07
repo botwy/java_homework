@@ -23,9 +23,10 @@ public class MainBeanUtils {
         Field[] arr_field = person1.getClass().getFields();
         for (int i = 0; i <arr_field.length ; i++) {
         if (Modifier.isFinal(arr_field[i].getModifiers())
-                && arr_field[i].getType().equals(String.class))
+                && arr_field[i].getType().equals(String.class)
+                && Modifier.isStatic(arr_field[i].getModifiers()) )
             try {
-                if (arr_field[i].getName().equals(arr_field[i].get(person1)))
+                if (arr_field[i].getName().equals(arr_field[i].get(arr_field[i].getDeclaringClass())))
                     System.out.println("имя final поля "+arr_field[i].getName() + " равно значению");
                 else
                 System.out.println("имя final поля "+arr_field[i].getName() + " НЕ равно значению");
