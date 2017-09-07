@@ -5,6 +5,7 @@ import java.util.Comparator;
 public class Person implements Comparable<Person>{
     String name;
     long age;
+    public static final String MONDAY = "MONDAY";
 
 
     public static Comparator<Person> byNameComparator=new Comparator<Person>() {
@@ -59,6 +60,11 @@ public class Person implements Comparable<Person>{
         return  Long.compare(age,o.getAge());
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
-
+    public void setAge(long age) {
+        this.age = age;
+    }
 }
