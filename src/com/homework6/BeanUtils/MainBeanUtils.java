@@ -9,5 +9,6 @@ public class MainBeanUtils {
 
         BeanUtils.assign(person1,person2);
 
+
     }
 }
