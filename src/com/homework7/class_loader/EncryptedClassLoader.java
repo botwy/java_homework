@@ -1,4 +1,4 @@
-package com.homefork7.class_loader;
+package com.homework7.class_loader;
 
 import java.io.File;
 import java.io.FileInputStream;
