@@ -25,10 +25,10 @@ public class PluginManager {
 
                 try {
                         URL url_pl =  file.toURI().toURL();
-                        URLClassLoader classLoader = new URLClassLoader(new URL[]{url_pl});
+                        MyClassLoader classLoader = new MyClassLoader(new URL[]{url_pl},pluginClassName);
                        Class pl_class = classLoader.loadClass(pluginClassName);
                     //    Class pl_class = ClassLoader.getSystemClassLoader().loadClass(pluginClassName);
-                 //     if(IPlugin.class.isAssignableFrom(pl_class))
+                     if(IPlugin.class.isAssignableFrom(pl_class))
                               plugin = (IPlugin) pl_class.newInstance();
                 } catch (MalformedURLException e) {
                         e.printStackTrace();
