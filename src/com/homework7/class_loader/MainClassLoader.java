@@ -7,7 +7,11 @@ import java.io.File;
 public class MainClassLoader {
 
     public static void main(String[] args) {
+
         PluginManager pl_manager = new PluginManager("plugins");
+
+        IPlugin pl_hello3 = pl_manager.load("user3_plugin", "com.homework7.class_loader.Hello");
+
         IPlugin pl_hello1 = pl_manager.load("user1_plugin", "com.homework7.class_loader.Hello");
    //     Plugin pl_hello1_2 = pl_manager.load("user1", "com.plugins.user1.Hello");
         IPlugin pl_hello2 = pl_manager.load("user2_plugin", "com.homework7.class_loader.Hello");
