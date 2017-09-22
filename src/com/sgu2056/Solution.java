@@ -7,15 +7,14 @@ import java.util.TreeSet;
 
 public class Solution {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+String data = "dd D a Cc aa aaa aaaa\n" +
+        " a Dd aa d aaa cC bbbb\n"+
+        " a Dd aa d aaa   cC bbbb bbbb aaaC aaaC aaaC\n";
+        Scanner scanner = new Scanner(data);
         String text = "";
-        // String text_line = "";
-       /* while ((text_line = scanner.nextLine()) != null) {
-            text += '\n' + text_line;
+        while (scanner.hasNextLine())
+            text += scanner.nextLine();
 
-        }*/
-        text = scanner.nextLine();
-        text = text.toLowerCase();
         String[] arr = text.split("[\\n \\r \\t]+");
         HashMap<String, Integer> hashMap_word = new HashMap<String, Integer>();
         TreeSet<String> treeSet_word = new TreeSet<String>();
@@ -23,6 +22,7 @@ public class Solution {
         for (String word : arr
                 ) {
             word = word.toLowerCase();
+
 
             if (hashMap_word.containsKey(word)) {
                 Integer new_value = hashMap_word.get(word) + 1;
