@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CashHandler implements InvocationHandler {
 
     private final Object delegate;
-    private final HashMap<Element, Float> cache_map = new HashMap<Element,Float>();
+    private final HashMap<Element, Float> cache_map = new HashMap<Element, Float>();
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final Lock r = readWriteLock.readLock();
     private final Lock w = readWriteLock.writeLock();
@@ -26,19 +26,22 @@ public class CashHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Element ask_key = new Element((float) args[0],(float) args[1],(String) args[2]);
+        Element ask_key = new Element((float) args[0], (float) args[1], (String) args[2]);
         Lock lock = new ReentrantLock();
+
+        w.lock();
+        try {
             if (!cache_map.containsKey(ask_key)) {
-                w.lock();
-                try {
-                    cache_map.put(ask_key, (float) method.invoke(delegate, args));
-                }
-                finally {
-                    w.unlock();
-                }
+
+                cache_map.put(ask_key, (float) method.invoke(delegate, args));
             }
 
-       r.lock();
+        } finally {
+            w.unlock();
+        }
+
+
+        r.lock();
         try {
             return cache_map.get(ask_key);
         } finally {
