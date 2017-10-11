@@ -1,10 +1,15 @@
 package com.homework6.calculatorProxyCash;
 
 import com.sun.deploy.net.proxy.ProxyUtils;
+import sun.nio.ch.ThreadPool;
 
 import java.io.*;
 import java.lang.reflect.Proxy;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class MainCalculator {
 
@@ -21,53 +26,36 @@ public class MainCalculator {
         System.out.println("Insert operator");
         String operator = scanner.next();
 
+         float result;
 
 
-      //  float result = execute(first_number, second_number, operator);
-       float result;
-       //Calculator calculator = new Calculator();
-        ICalculator calculator = (ICalculator) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
-                new Class[]{ICalculator.class},new CashHandler(new Calculator()));
-        result = calculator.calculateResult(first_number,second_number,operator);
+        Calculator calc = new Calculator();
 
+        ICalculator cached = MyProxyUtils.makeCached(calc);
+
+        result = cached.calculateResult(first_number,second_number,operator);
         System.out.println("Result = " + result);
 
-       // FileOutputStream fos = null;
-       // FileInputStream fin = null;
-        /*try {
-            fin = new FileInputStream("C:\\Users\\denis\\Documents\\JavaSchool\\1.txt");
-            fos = new FileOutputStream("C:\\Users\\denis\\Documents\\JavaSchool\\1.txt");
-            byte[] buffer_old = new byte[fin.available()];
-            fin.read(buffer_old,0,buffer_old.length);
-            System.out.println(buffer_old.length);
-            byte[] buffer_new = Float.toString(result).getBytes();
-            byte[] buffer_total = new byte[buffer_old.length+buffer_new.length];
-            for (int i = 0; i < buffer_old.length; i++) {
-                buffer_total[i]=buffer_old[i];
-            }
-            for (int i = 0; i < buffer_new.length; i++) {
-                buffer_total[i+buffer_old.length] = buffer_new[i];
-            }
-            fos.write(buffer_total);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        for (int i = 0; i < 5 ; i++) {
+            executorService.submit(new Callable<Float>() {
+                @Override
+                public Float call() throws Exception {
+                    float result = cached.calculateResult(1,2,"+");
+                    System.out.println(Thread.currentThread()+" Result = "+result);
+                    return result;
+                }
+            });
+
+        }
+
+        executorService.shutdown();
+
+
+
 
 
 
     }
 
-/*    private static float execute(float firs_number, float second_number, String operator) {
-        switch (operator) {
-            case "+":
-                return firs_number + second_number;
-            case "-":
-                return firs_number - second_number;
-            case "*":
-                return firs_number * second_number;
-            case "/":
-                return firs_number / second_number;
-        }
-        return 0;
-    }*/
 }

@@ -1,6 +1,6 @@
 package com.homework7.class_loader;
 
-import com.iplugin.IPlugin;
+//import com.iplugin.IPlugin;
 
 import java.io.File;
 

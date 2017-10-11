@@ -6,10 +6,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CashHandler implements InvocationHandler {
 
     private final Object delegate;
+    private final HashMap<Element, Float> cache_map = new HashMap<Element,Float>();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private final Lock r = readWriteLock.readLock();
+    private final Lock w = readWriteLock.writeLock();
 
     public CashHandler(Object delegate) {
         this.delegate = delegate;
@@ -17,41 +26,27 @@ public class CashHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        float result;
-        float operand1 = (float) args[0];
-        float operand2 = (float) args[1];
-        String operator = (String) args[2];
-        FileReader fr = new FileReader("C:\\Users\\denis\\Documents\\JavaSchool\\1.txt");
-        BufferedReader br = new BufferedReader(fr);
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] arr = line.split("\\t");
-            if (arr.length != 4) continue;
-            if (Float.toString(operand1).equals(arr[1]) && Float.toString(operand2).equals(arr[2]) && operator.equals(arr[0])) {
-                result = Float.parseFloat(arr[3]);
-                return result;
+        Element ask_key = new Element((float) args[0],(float) args[1],(String) args[2]);
+        Lock lock = new ReentrantLock();
+            if (!cache_map.containsKey(ask_key)) {
+                w.lock();
+                try {
+                    cache_map.put(ask_key, (float) method.invoke(delegate, args));
+                }
+                finally {
+                    w.unlock();
+                }
             }
-        }
-        result = (float) method.invoke(delegate, args);
-        System.out.println(args[0] + " " + args[1] + " " + args[2]);
 
-        writeInFile(operand1, operand2, operator, result);
-        return result;
-    }
-
-    public void writeInFile(float operand1, float operand2, String operator, float result) {
-        String operand1_text = Float.toString(operand1);
-        String operand2_text = Float.toString(operand2);
-
+       r.lock();
         try {
-            FileWriter fileWriter = new FileWriter("C:\\Users\\denis\\Documents\\JavaSchool\\1.txt", true);
-            fileWriter.write("\n" + operator + "\t" + operand1_text
-                    + "\t" + operand2_text
-                    + "\t" + result
-            );
-            fileWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return cache_map.get(ask_key);
+        } finally {
+            r.unlock();
         }
+
+
     }
+
+
 }
