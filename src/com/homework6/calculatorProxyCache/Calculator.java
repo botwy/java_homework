@@ -1,4 +1,4 @@
-package com.homework6.calculatorProxyCash;
+package com.homework6.calculatorProxyCache;
 
 public class Calculator implements ICalculator {
 

@@ -1,10 +1,5 @@
-package com.homework6.calculatorProxyCash;
+package com.homework6.calculatorProxyCache;
 
-import com.sun.deploy.net.proxy.ProxyUtils;
-import sun.nio.ch.ThreadPool;
-
-import java.io.*;
-import java.lang.reflect.Proxy;
 import java.util.Scanner;
 import java.util.concurrent.*;
 

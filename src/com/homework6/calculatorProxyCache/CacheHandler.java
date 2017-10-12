@@ -1,9 +1,5 @@
-package com.homework6.calculatorProxyCash;
+package com.homework6.calculatorProxyCache;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,7 +8,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class CashHandler implements InvocationHandler {
+public class CacheHandler implements InvocationHandler {
 
     private final Object delegate;
     private final HashMap<Element, Float> cache_map = new HashMap<Element, Float>();
@@ -20,7 +16,7 @@ public class CashHandler implements InvocationHandler {
     private final Lock r = readWriteLock.readLock();
     private final Lock w = readWriteLock.writeLock();
 
-    public CashHandler(Object delegate) {
+    public CacheHandler(Object delegate) {
         this.delegate = delegate;
     }
 
