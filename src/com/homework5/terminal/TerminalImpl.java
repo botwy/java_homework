@@ -5,13 +5,13 @@ import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.zip.DataFormatException;
 
 public class TerminalImpl implements ITerminal {
-    private TerminalServer server;
     private final PinValidator pinValidator = new PinValidator();
 
     private final UI ui = new UI();
@@ -20,32 +20,39 @@ public class TerminalImpl implements ITerminal {
     private boolean isLocked = false;
     private long lockTimeMilis = 0;
 
-    
+    //connect and get current server-object
+    private TerminalServer getServer() {
+        TerminalServer server = null;
+        try (Socket socket = new Socket("localhost", 3000)) {
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            server = (TerminalServer) ois.readObject();
+            ois.close();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            return server;
+        }
+    }
 
     @Override
     public float getBalance(String pin) {
+        TerminalServer server = getServer();
         if (checkPin(pin)) {
-            try( Socket socket = new Socket("localhost",3000)) {
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                server = (TerminalServer) ois.readObject();
-                ois.close();
-                if (server==null) return -1f;
+            try {
+
+                if (server == null) return -1f;
 
                 float bal = server.getBalance();
                 ui.showBalance(bal);
                 return bal;
-            } catch (SocketException e) {
+            } catch (ConnectException e) {
                 e.printStackTrace();
                 ui.showSocketException();
-                return -1f;
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-                return -1f;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return -1f;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
                 return -1f;
             }
         } else return -1f;
@@ -53,6 +60,10 @@ public class TerminalImpl implements ITerminal {
 
     @Override
     public boolean withdrow(String pin, float sum) {
+        TerminalServer server = getServer();
+
+        if (server == null) return false;
+
         if (sum % 100f > 0) {
             try {
                 throw new DataFormatException("Sum not multiple 100 rub. Enter sum multiple 100 rub");
@@ -66,7 +77,7 @@ public class TerminalImpl implements ITerminal {
             try {
                 server.withdrow(sum);
                 ui.showWithdrowDone(sum);
-            } catch (SocketException e) {
+            } catch (ConnectException e) {
                 e.printStackTrace();
                 ui.showSocketException();
             } catch (BadStringOperationException e) {
@@ -90,10 +101,12 @@ public class TerminalImpl implements ITerminal {
         }
 
         if (checkPin(pin)) {
+            TerminalServer server = getServer();
+            if (server == null) return false;
             try {
                 server.add(sum);
                 ui.showAddMoneyDone(sum);
-            } catch (SocketException e) {
+            } catch (ConnectException e) {
                 e.printStackTrace();
                 ui.showSocketException();
             }
@@ -101,6 +114,7 @@ public class TerminalImpl implements ITerminal {
         } else return false;
     }
 
+    //checking pin code
     private boolean checkPin(String pin) {
         if (pin == null || pin.equals("") || pin.equals("0")) {
             try {

@@ -1,6 +1,10 @@
 package com.homework5.terminal;
 
+import com.sun.org.apache.bcel.internal.classfile.ExceptionTable;
+import com.sun.xml.internal.ws.spi.db.DatabindingException;
+
 import javax.management.BadStringOperationException;
+import java.net.ConnectException;
 import java.net.SocketException;
 
 public class TerminalServer {
@@ -16,15 +20,21 @@ public class TerminalServer {
         this.balance = balance;
     }
 
-    public float getBalance() throws SocketException {
+/**
+ * @exception ConnectException if can't connect to database
+ */
+    public float getBalance() throws ConnectException {
         if (!netProblem)
             return balance;
-        else throw new SocketException("Communication error");
+        else throw new ConnectException("Communication DataBase error");
     }
 
-
-    public boolean withdrow(float sum) throws BadStringOperationException, SocketException {
-        if (netProblem) throw new SocketException("Communication error");
+    /**
+     * @exception BadStringOperationException if enter sum > balance
+     * @exception  ConnectException if can't connect to database
+     */
+    public boolean withdrow(float sum) throws BadStringOperationException, ConnectException {
+        if (netProblem) throw new ConnectException("Communication DataBase error");
         if (balance >= sum) {
             balance -= sum;
             return true;
@@ -33,15 +43,20 @@ public class TerminalServer {
         }
     }
 
-    public boolean add(float sum) throws SocketException {
-        if (netProblem) throw new SocketException("Communication error");
+    /**
+     * @exception ConnectException if can't connect to database
+     */
+    public boolean add(float sum) throws ConnectException {
+        if (netProblem) throw new ConnectException("Communication DataBase error");
         balance += sum;
         return true;
     }
 
-
-    public boolean checkEnoughBalance(float request_sum) throws SocketException {
-        if (netProblem) throw new SocketException("Communication error");
+    /**
+     * @exception ConnectException if can't connect to database
+     */
+    public boolean checkEnoughBalance(float request_sum) throws ConnectException {
+        if (netProblem) throw new ConnectException("Communication DataBase error");
         if (request_sum <= balance) return true;
         else return false;
     }
