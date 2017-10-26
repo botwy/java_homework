@@ -1,4 +1,4 @@
-package com.homework2;
+package com.homework2.classes;
 
 public class Person {
     private final boolean man;

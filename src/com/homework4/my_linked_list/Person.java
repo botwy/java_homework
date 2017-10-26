@@ -1,4 +1,4 @@
-package com.homework3.my_linked_list;
+package com.homework4.my_linked_list;
 
 import java.util.Comparator;
 

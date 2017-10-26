@@ -1,4 +1,4 @@
-package com.homework3.my_linked_list;
+package com.homework4.my_linked_list;
 
 public class Node<E> {
     private E element;
@@ -22,7 +22,7 @@ public class Node<E> {
     }
 
     public void setNext(Node<E> next) {
-        this.next = next;
+        this.next=next;
     }
 
     public void setPrev(Node<E> prev) {

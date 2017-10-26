@@ -1,7 +1,8 @@
-package com.homework4.collection;
+package com.homework3.collection;
 
 import java.io.*;
 import java.util.*;
+import java.lang.String;
 
 public class MainCollection {
 
@@ -11,6 +12,7 @@ public class MainCollection {
         BufferedReader br = null;
         try {
             fr = new FileReader("src\\com\\homework4\\collection\\2.txt");
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -26,7 +28,7 @@ public class MainCollection {
                 "Many methods in Collections Framework interfaces are defined in terms of the equals method. For example, the specification for the contains(Object o) method says: \"returns true if and only if this collection contains at least one element e such that (o==null ? e==null : o.equals(e)).\" This specification should not be construed to imply that invoking Collection.contains with a non-null argument o will cause o.equals(e) to be invoked for any element e. Implementations are free to implement optimizations whereby the equals invocation is avoided, for example, by first comparing the hash codes of the two elements. (The Object.hashCode() specification guarantees that two objects with unequal hash codes cannot be equal.) More generally, implementations of the various Collections Framework interfaces are free to take advantage of the specified behavior of underlying Object methods wherever the implementor deems it appropriate. \n" +
                 "This interface is a member of the Java Collections Framework.";*/
 
-        String text="";
+        String text = "";
         int chr = -1;
         if (fr != null)
             try {
@@ -38,9 +40,9 @@ public class MainCollection {
                 e.printStackTrace();
             }
         String[] arr = text.split("\\p{P}?[\\n \\r \\t]+\"?");
-        //  List<String> list_word = new ArrayList<String>();
 
-//TreeSet и HashMap
+
+          //TreeSet и HashMap
         //  Задание 2: Выведите на экран список различных слов файла, отсортированный по возрастанию их длины (компаратор сначала по длине слова, потом по тексту).
         Comparator<String> byLengthAndTextComparator = new Comparator<String>() {
             @Override
@@ -63,9 +65,8 @@ public class MainCollection {
         HashMap<String, Integer> hashMap_word = new HashMap<String, Integer>();
         for (String word : arr
                 ) {
-            word=word.toLowerCase();
-            //       System.out.println(word);
-            //list_word.add(word);
+            word = word.toLowerCase();
+
             treeSet_word.add(word.toLowerCase());
             if (hashMap_word.containsKey(word)) {
                 Integer new_value = hashMap_word.get(word) + 1;
@@ -74,10 +75,9 @@ public class MainCollection {
         }
 
 
-
         for (String word : treeSet_word
                 ) {
-            word=word.toLowerCase();
+            word = word.toLowerCase();
             System.out.println(word);
         }
 
@@ -87,7 +87,6 @@ public class MainCollection {
         System.out.println("Количество различных слов: " + treeSet_word.size());
 
 
-
         for (Map.Entry<String, Integer> item : hashMap_word.entrySet()
                 ) {
             System.out.println(item.getKey() + " - " + item.getValue());
@@ -95,7 +94,6 @@ public class MainCollection {
 
 
 
-//List
         String line = "";
         List<String> list = new ArrayList<String>();
         try {
@@ -109,16 +107,16 @@ public class MainCollection {
             e.printStackTrace();
         }
 
-       // Задание 4: Выведите на экран все строки файла в обратном порядке.
+        // Задание 4: Выведите на экран все строки файла в обратном порядке.
         for (int i = list.size() - 1; i >= 0; i--)
             System.out.println(list.get(i));
 
-      //  Задание 5: Реализуйте свой Iterator для обхода списка в обратном порядке.
+        //  Задание 5: Реализуйте свой Iterator для обхода списка в обратном порядке.
         IteratorBack<String> iter = new IteratorBack<String>(list);
         while (iter.hasPrev())
             System.out.println(iter.prev());
 
-     //   Задание 6: Выведите на экран строки, номера которых задаются пользователем в произвольном порядке.
+        //   Задание 6: Выведите на экран строки, номера которых задаются пользователем в произвольном порядке.
         Scanner scanner = new Scanner(System.in);
         for (int i = 0; i < 5; i++) {
             System.out.println("Введите номер строки:");

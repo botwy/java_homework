@@ -1,6 +1,6 @@
 package com.homework6.BeanUtils;
 
-import com.homework3.my_linked_list.Person;
+import com.homework4.my_linked_list.Person;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

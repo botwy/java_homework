@@ -1,13 +1,15 @@
-package com.homework4.collection;
+package com.homework3.collection;
 
+import java.util.Collections;
 import java.util.List;
 
+//Iterator для обхода списка в обратном порядке.
 public class IteratorBack<E>{
  List<E> list;
  int cursor=0;
 
     public IteratorBack(List<E> list) {
-        this.list = list;
+        this.list = Collections.unmodifiableList(list);
         cursor=list.size();
     }
 

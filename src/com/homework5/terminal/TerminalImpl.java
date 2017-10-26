@@ -3,11 +3,15 @@ package com.homework5.terminal;
 import javax.management.BadStringOperationException;
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.zip.DataFormatException;
 
 public class TerminalImpl implements ITerminal {
-    private final TerminalServer server = new TerminalServer();
+    private TerminalServer server;
     private final PinValidator pinValidator = new PinValidator();
 
     private final UI ui = new UI();
@@ -16,17 +20,32 @@ public class TerminalImpl implements ITerminal {
     private boolean isLocked = false;
     private long lockTimeMilis = 0;
 
+    
 
     @Override
     public float getBalance(String pin) {
         if (checkPin(pin)) {
-            try {
+            try( Socket socket = new Socket("localhost",3000)) {
+                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                server = (TerminalServer) ois.readObject();
+                ois.close();
+                if (server==null) return -1f;
+
                 float bal = server.getBalance();
                 ui.showBalance(bal);
                 return bal;
             } catch (SocketException e) {
                 e.printStackTrace();
                 ui.showSocketException();
+                return -1f;
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                return -1f;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return -1f;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
                 return -1f;
             }
         } else return -1f;

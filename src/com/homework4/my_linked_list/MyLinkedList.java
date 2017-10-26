@@ -1,13 +1,15 @@
-package com.homework3.my_linked_list;
+package com.homework4.my_linked_list;
 
 import java.util.*;
 
+//Duo linked list
 public class MyLinkedList<E> {
 
     private Node<E> head;
     private Node<E> tail;
     private int count = 0;
 
+    //Add elem to linedlist in the end
     public void add(E element) {
         Node<E> node = new Node<E>(element);
         if (count == 0) {
@@ -21,6 +23,7 @@ public class MyLinkedList<E> {
         count++;
     }
 
+    //Add elem to linedlist with index
     public void add(int index, E element) {
         if (count == 0 || index>count) throw new IndexOutOfBoundsException("Do not add, index " + index + " out of bounds");
         Node<E> node = new Node<E>(element);
@@ -44,6 +47,7 @@ public class MyLinkedList<E> {
 
     }
 
+    //Get elem by index
     public E get(int index) {
         if (count == 0 || index>=count) throw new IndexOutOfBoundsException("Do not get, index " + index + " out of bounds");
         Node<E> cursor = findNodeByIndex(index);
@@ -51,6 +55,7 @@ public class MyLinkedList<E> {
         return cursor.getElement();
     }
 
+    //remove elem by index
     public E remove(int index) {
         if (count == 0 || index>=count) throw new IndexOutOfBoundsException("Do not remove, index " + index + " out of bounds");
 
@@ -75,10 +80,12 @@ public class MyLinkedList<E> {
         return cursor.getElement();
     }
 
+    //get Iterator
     public Iterator<E> iterator() {
         return new Itr<E>(head);
     }
 
+    //add all elem of Collection to MyLinedList
     public boolean addAll(Collection<? extends E> c) {
         boolean isChange = false;
         for (E element : c) {
@@ -88,6 +95,7 @@ public class MyLinkedList<E> {
         return isChange;
     }
 
+    //copy all elem of Collection to MyLinedList
     public boolean copy(Collection<? extends E> c) {
         if (c.size() > count)
             throw new IndexOutOfBoundsException("Do not copy from this Collection, size of MyLinkedList < size of this Collection");
@@ -105,7 +113,7 @@ public class MyLinkedList<E> {
         return true;
     }
 
-
+//inner class Iterator
     private class Itr<E> implements Iterator<E> {
         private Node<E> cursor;
         private Node<E> h;
@@ -137,6 +145,7 @@ public class MyLinkedList<E> {
         }
     }
 
+    //find element by index
     private Node<E> findNodeByIndex(int index) {
         Node<E> cursor = null;
         if (index<count-index) {
