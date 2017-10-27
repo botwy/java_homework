@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+//агрузчик плагинов в вашу систему. Допустим вы пишите свой браузер и хотите чтобы люди имели имели возможность писать плагины для него.
+// Соответственно, разные разработчики могут назвать свои классы одинаковым именем, ваш загрузчик должен корректно это обрабатывать.
 public class PluginManager {
 
         private final String pluginRootDirectory;

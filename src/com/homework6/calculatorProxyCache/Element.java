@@ -5,6 +5,7 @@ public class Element {
    final float operand2;
    final String operator;
 
+   //Составной ключ, который будет использоваться для кеширования
     public Element(float operand1, float operand2, String operator) {
         this.operand1 = operand1;
         this.operand2 = operand2;

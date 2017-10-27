@@ -1,4 +1,4 @@
-package com.plugins.encrypted_classes;
+package com.homework7.plugins.encrypted_classes;
 
 public class HelloEncr{
 

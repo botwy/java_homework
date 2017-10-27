@@ -2,6 +2,8 @@ package com.homework7.class_loader;
 
 //import com.iplugin.IPlugin;
 
+import com.homework7.plugins.encrypted_classes.EncryptedClassLoader;
+
 import java.io.File;
 
 public class MainClassLoader {
@@ -49,7 +51,7 @@ public class MainClassLoader {
 
         ClassLoader encrClassLoader = new EncryptedClassLoader("0",new File("out\\production\\java_homework\\com\\plugins\\encrypted_classes"),null);
         try {
-        Class cl = encrClassLoader.loadClass("com.plugins.encrypted_classes.HelloEncr");
+        Class cl = encrClassLoader.loadClass("com.homework7.plugins.encrypted_classes.HelloEncr");
        System.out.println(cl);
        System.out.println(cl.getClassLoader());
         // HelloEncr o = (HelloEncr) cl.newInstance();
