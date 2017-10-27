@@ -3,6 +3,7 @@ package com.homework4.count_map;
 
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,7 +14,10 @@ public class CollectionUtils {
         destination.addAll(source);
     }
 
+
+    //create and return new ArrayList
     public static List newArrayList() {
+        return new ArrayList();
     }
 
     public static <T> int indexOf(List<? extends T> source, T o) {
@@ -53,9 +57,9 @@ public class CollectionUtils {
     //Возвращает лист, содержащий элементы из входного листа в диапазоне от min до max.
 // Элементы сравнивать через Comparable.
 // Прмер range(Arrays.asList(8,1,3,5,6, 4), 3, 6) вернет {3,4,5,6}
-    public static <T> List range(List<T> list, T min, T max) {
+  /*  public static <T> List range(List<T> list, T min, T max) {
 
-    }
+    }*/
 
 
     //Возвращает лист, содержащий элементы из входного листа в диапазоне от min до max.

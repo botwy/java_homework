@@ -1,11 +1,16 @@
 package com.homework4.count_map;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
 public class CountMapImpl<E> implements CountMap<E> {
 
-    private Map<E, Integer> map;
+    private final Map<E, Integer> map;
+
+    public CountMapImpl() {
+        this.map=new HashMap<E,Integer>();
+    }
 
     @Override
     public void add(E o) {
