@@ -11,6 +11,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.zip.DataFormatException;
 
+
+/**
+ * Доступ к терминалу должен предоставлять только после корректного ввода пина. При попытке вызова любого метода без ввода пина, должен кидаться ексепшен. 
+ * При вводе 3 неправильных пинов, аккаунт лочится на 5сек( при попытке обраться к нему вылетает AccountIsLockedException c информацией о времени разлочения).
+ * Класть и снимать деньги можно только, если сумма кратна 100.
+ * Банкоматы всего лишь делают проверку введенных данных и отправляют запросы на удаленный сервер(TerminalServer). 
+ */
 public class TerminalImpl implements ITerminal {
     private final PinValidator pinValidator = new PinValidator();
 

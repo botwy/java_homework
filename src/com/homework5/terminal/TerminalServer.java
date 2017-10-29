@@ -7,6 +7,10 @@ import javax.management.BadStringOperationException;
 import java.net.ConnectException;
 import java.net.SocketException;
 
+/**
+ *  Получает запросы от банкоматов (терминалов), связывается с базой данных, выполняет операции, возвращает результат
+ *  TerminalServer может кидать исключения связанные с проблемами сети; когда недостаточно денег чтобы их снять;
+ */
 public class TerminalServer {
 
     private float balance = 9500f;
